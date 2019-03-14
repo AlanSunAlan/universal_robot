@@ -1,0 +1,88 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://ros.org/wiki/xacro"
+       name="ur5" >
+
+  <!-- common stuff -->
+  <xacro:include filename="$(find ur_description)/urdf/common.gazebo.xacro" />
+
+  <!-- ur5 -->
+  <xacro:include filename="$(find ur_description)/urdf/ur5.urdf.xacro" />
+
+  <!-- kinect camera -->
+  <xacro:include filename="$(find hector_sensors_description)/urdf/kinect_camera.urdf.xacro" />
+
+  <!-- workplatform-->
+  <xacro:include filename="$(find ur_description)/urdf/platform.urdf.xacro" />
+
+  <!-- arm -->
+  <xacro:ur5_robot prefix="" joint_limited="true"
+    shoulder_pan_lower_limit="${-pi}" shoulder_pan_upper_limit="${pi}"
+    shoulder_lift_lower_limit="${-pi}" shoulder_lift_upper_limit="${pi}"
+    elbow_joint_lower_limit="${-pi}" elbow_joint_upper_limit="${pi}"
+    wrist_1_lower_limit="${-pi}" wrist_1_upper_limit="${pi}"
+    wrist_2_lower_limit="${-pi}" wrist_2_upper_limit="${pi}"
+    wrist_3_lower_limit="${-pi}" wrist_3_upper_limit="${pi}"
+  />
+
+  <link name="world" />
+
+  <joint name="world_joint" type="fixed">
+    <parent link="world" />
+    <child link = "box" />
+    <origin xyz="0.0 0.0 0.6" rpy="0.0 0.0 0.0" />
+  </joint>
+
+  <!--simpleGripper-->
+  <link name="gripper_link">
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <mass value="0.1"/>
+      <inertia ixx="0.0001" ixy="0" ixz="0" iyy="0.0002" iyz="0" izz="0.0001"/>
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://ur_description/meshes/gripper/SimpleGripper.STL"/>
+      </geometry>
+      <material name="LightGrey">
+        <color rgba="0.7 0.7 0.7 1.0"/>
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://ur_description/meshes/gripper/SimpleGripper.STL"/>
+      </geometry>
+    </collision>
+  </link>
+
+  <joint name="gripper_joint" type="fixed">
+    <parent link="tool0"/>
+    <child link="gripper_link"/>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+    <axis xyz="0 0 1" />
+  </joint>
+
+  <!--gripper_end_link for grasp -->
+  <link name="gripper_end_link" />
+
+  <joint name="gripper_end_joint" type="fixed">
+    <parent link="gripper_link" />
+    <!--child link = "base_link" /-->
+    <child link = "gripper_end_link" />
+    <origin xyz="0.0 0 0.32" rpy="0.0 0.0 0.0" />
+  </joint>
+
+  <!-- kinect camare -->
+  <xacro:kinect_camera parent="box" name="kinect">
+    <!--origin xyz="0.2 0.1 1.0" rpy="0.0 ${pi/2} 0.0"/-->
+    <origin xyz="0.6 0 0.8" rpy="0.0 ${pi/2} 0"/>
+  </xacro:kinect_camera>
+
+  <!-- workplatform -->
+  <xacro:boxbase child="base_link" >
+    <origin xyz="0.0 0.0 ${boxz}" rpy="0.0 0.0 0.0"/>
+  </xacro:boxbase>
+
+
+</robot>

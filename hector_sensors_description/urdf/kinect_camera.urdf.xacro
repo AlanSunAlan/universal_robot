@@ -2,7 +2,7 @@
 
 <robot xmlns:xacro="http://ros.org/wiki/xacro">
     <xacro:property name="M_PI" value="3.1415926535897931" />
-  
+
     <xacro:macro name="kinect_camera_model" params="name parent *origin">
       <link name="${name}_link">
         <inertial_sphere mass="0.01" diameter="0.07" />
@@ -64,7 +64,7 @@
       <xacro:kinect_camera_model name="${name}" parent="${parent}">
         <xacro:insert_block name="origin" />
       </xacro:kinect_camera_model>
-      
+
       <gazebo reference="${name}_rgb_frame">
         <sensor type="depth" name="${name}">
           <always_on>true</always_on>
@@ -97,4 +97,3 @@
       </gazebo>
     </xacro:macro>
   </robot>
-  
